@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IoT Water Level Detection System - NodeMCU ESP8266</title>
+  <title>IoT Water Level Detection System - Technical Dashboard</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -53,7 +53,6 @@
       font-size: 1.1rem;
     }
 
-    /* Dashboard Grid Layout */
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -77,7 +76,6 @@
       padding-bottom: 8px;
     }
 
-    /* Status Indicator Gauge */
     .gauge-container {
       text-align: center;
       padding: 10px 0;
@@ -123,7 +121,6 @@
       100% { opacity: 1; }
     }
 
-    /* Wiring Table */
     .wiring-table {
       width: 100%;
       border-collapse: collapse;
@@ -142,7 +139,33 @@
       font-weight: 600;
     }
 
-    /* Q&A Accordion Styling */
+    .uses-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .uses-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .uses-list li::before {
+      content: "•";
+      color: var(--accent-blue);
+      font-weight: bold;
+      font-size: 1.2rem;
+      position: absolute;
+      left: 0;
+      top: -2px;
+    }
+
+    .uses-list strong {
+      color: var(--text-main);
+    }
+
     .qa-section {
       margin-top: 40px;
     }
@@ -150,20 +173,17 @@
     .section-title {
       font-size: 1.8rem;
       color: var(--accent-blue);
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
-    .difficulty-header {
+    .section-subtitle {
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.9rem;
-      margin: 25px 0 10px 0;
-      font-weight: bold;
+      margin-bottom: 25px;
+      font-size: 0.95rem;
     }
 
     .accordion {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       overflow: hidden;
@@ -177,7 +197,7 @@
       color: var(--text-main);
       padding: 16px 20px;
       text-align: left;
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -192,8 +212,9 @@
 
     .accordion-btn::after {
       content: '+';
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: var(--accent-blue);
+      margin-left: 10px;
     }
 
     .accordion-btn.active::after {
@@ -208,14 +229,30 @@
       border-top: 1px solid transparent;
     }
 
-    .accordion-content p {
+    .accordion-content p, .accordion-content ol {
       padding: 16px 20px;
       color: var(--text-muted);
-      font-size: 0.98rem;
+      font-size: 0.95rem;
       line-height: 1.7;
     }
 
-    /* Controls / Testing UI */
+    .accordion-content ol {
+      padding-left: 40px;
+    }
+
+    .accordion-content li {
+      margin-bottom: 8px;
+    }
+
+    code {
+      background-color: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
     .slider-control {
       margin-top: 20px;
       text-align: center;
@@ -231,36 +268,32 @@
 
 <div class="container">
   <header>
-    <h1>IoT Water Level Detector System</h1>
-    <p>NodeMCU ESP8266 • Blynk IoT Cloud Integration • Audio Alert Subsystem</p>
+    <h1>IoT Water Level Detection System</h1>
+    <p>NodeMCU ESP8266 • Blynk Cloud Telemetry • Audio Alert Architecture</p>
   </header>
 
-  <!-- Live System Dashboard -->
   <div class="dashboard-grid">
-    <!-- Live Sensor Gauge -->
     <div class="card">
-      <h2>Live Water Level Reading</h2>
+      <h2>Live Telemetry Simulator</h2>
       <div class="gauge-container">
         <span class="water-value" id="adcValue">240</span> <span class="unit">/ 1023 ADC</span>
         <br>
         <div class="status-badge normal" id="statusBadge">Status: Normal (Safe)</div>
       </div>
       
-      <!-- Interactive Demo Slider for Exhibition Testing -->
       <div class="slider-control">
-        <label for="sensorSim" style="color: var(--text-muted); font-size: 0.85rem;">Exhibition Demo Simulator:</label><br>
+        <label for="sensorSim" style="color: var(--text-muted); font-size: 0.85rem;">Adjust Water Level (Interactive Demo):</label><br>
         <input type="range" id="sensorSim" min="0" max="1023" value="240" oninput="updateDemoGauge(this.value)">
       </div>
     </div>
 
-    <!-- Hardware Configuration -->
     <div class="card">
-      <h2>Pin Mapping & Connections</h2>
+      <h2>Pin Mapping & Schematic</h2>
       <table class="wiring-table">
         <thead>
           <tr>
             <th>Component</th>
-            <th>Pin / Signal</th>
+            <th>Pin Signal</th>
             <th>NodeMCU Pin</th>
           </tr>
         </thead>
@@ -289,113 +322,151 @@
       </table>
     </div>
 
-    <!-- Software Specifications -->
     <div class="card">
-      <h2>System Thresholds & Timing</h2>
-      <table class="wiring-table">
-        <tbody>
-          <tr>
-            <td>Alarm Threshold</td>
-            <td><strong>&ge; 620 ADC</strong></td>
-          </tr>
-          <tr>
-            <td>Buzzer Frequency</td>
-            <td><strong>1000 Hz Continuous</strong></td>
-          </tr>
-          <tr>
-            <td>Noise Reduction Filter</td>
-            <td><strong>10-Reading Moving Average</strong></td>
-          </tr>
-          <tr>
-            <td>Blynk Alert Throttle</td>
-            <td><strong>30 Seconds Interval</strong></td>
-          </tr>
-        </tbody>
-      </table>
+      <h2>Real-World Applications</h2>
+      <ul class="uses-list">
+        <li><strong>Overhead Tank Automation:</strong> Prevents residential water overflow and reduces electricity wastage.</li>
+        <li><strong>Basement Flood Monitoring:</strong> Provides early warning push notifications for sump pump failures during heavy rain.</li>
+        <li><strong>Smart Agriculture:</strong> Keeps soil hydration and reservoir reserves within ideal irrigation parameters.</li>
+        <li><strong>Industrial Leak Detection:</strong> Monitors HVAC drip pans and liquid storage tanks to mitigate structural damage.</li>
+      </ul>
     </div>
   </div>
 
-  <!-- Interactive Exhibition Q&A Accordion -->
   <div class="qa-section">
-    <h2 class="section-title">Exhibition Technical Defense Q&amp;A</h2>
+    <h2 class="section-title">Technical Knowledge Base & Code Instructions</h2>
+    <p class="section-subtitle">Explore system architecture, modification guides, edge-case mitigation, and IoT configuration details across 50 technical points.</p>
 
-    <!-- EASY QUESTIONS -->
-    <div class="difficulty-header">Easy / General Overview</div>
-
+    <!-- STEP BY STEP CODE MODIFICATION INSTRUCTION -->
     <div class="accordion">
-      <button class="accordion-btn">What does your project do, and what problem does it solve?</button>
+      <button class="accordion-btn">🛠️ How to Modify & Calibrate System Code Step-by-Step</button>
       <div class="accordion-content">
-        <p>It monitors water levels in real time using an analog sensor connected to a NodeMCU ESP8266. When water reaches a pre-set hazardous threshold, it triggers an immediate local audio alert (buzzer) and sends a remote notification to a smartphone via the Blynk IoT cloud to prevent overflow or water damage.</p>
+        <ol>
+          <li><strong>Open Firmware File:</strong> Launch Arduino IDE on your computer and open your project sketch file (<code>sketch_sep6b.ino</code>).</li>
+          <li><strong>Update Network Credentials:</strong> Edit lines 9 and 10 to match your Wi-Fi name and password:
+            <br><code>char ssid[] = "Your_WiFi_Name";</code>
+            <br><code>char pass[] = "Your_WiFi_Password";</code>
+          </li>
+          <li><strong>Adjust Water Limit Threshold:</strong> Locate the trigger line in your loop function:
+            <br><code>if (sensorValue >= 620)</code>
+            <br>Increase or decrease <code>620</code> based on your dry vs wet Serial Monitor readings.
+          </li>
+          <li><strong>Modify Alarm Pitch:</strong> To alter the buzzer sound frequency, adjust the hertz parameter:
+            <br><code>tone(buzzerPin, 1000);</code> <i>(Change 1000 to 2000 for a higher frequency alert)</i>.
+          </li>
+          <li><strong>Change Alert Throttling Duration:</strong> Change the interval time (in milliseconds) to control notification frequency:
+            <br><code>const long alertInterval = 30000;</code> <i>(Change 30000 to 60000 for 1-minute intervals)</i>.
+          </li>
+          <li><strong>Compile and Upload:</strong> Connect your NodeMCU via USB, ensure Board is set to <code>NodeMCU 1.0 (ESP-12E Module)</code>, and press <code>Cmd + U</code> (Mac) or <code>Ctrl + U</code> (Windows).</li>
+        </ol>
       </div>
     </div>
 
-    <div class="accordion">
-      <button class="accordion-btn">Why did you choose a NodeMCU (ESP8266) instead of an Arduino Uno?</button>
-      <div class="accordion-content">
-        <p>The NodeMCU features a built-in 2.4GHz Wi-Fi chip (ESP8266) at a very low cost, making it ideal for IoT cloud connectivity without requiring expensive external Wi-Fi shields like an Arduino Uno would.</p>
-      </div>
-    </div>
+    <!-- 50 UNIFIED TECHNICAL QUESTIONS -->
+    <div class="accordion"><button class="accordion-btn">1. What is the core purpose of this system?</button><div class="accordion-content"><p>The system automatically monitors water levels in real time using an analog sensor module and an ESP8266 microcontroller. When water crosses a calibrated safety limit, it triggers a local 1000Hz continuous audio alarm and transmits a push notification to a mobile device via the Blynk cloud platform.</p></div></div>
 
-    <div class="accordion">
-      <button class="accordion-btn">How does the water sensor detect water?</button>
-      <div class="accordion-content">
-        <p>It uses parallel printed copper traces on a PCB. When water touches the traces, it completes an electrical path between power and ground through the water's natural conductivity, changing the resistance and altering the voltage fed into the analog pin.</p>
-      </div>
-    </div>
+    <div class="accordion"><button class="accordion-btn">2. Why choose a NodeMCU (ESP8266) over a traditional microcontroller like an Arduino Uno?</button><div class="accordion-content"><p>The NodeMCU incorporates built-in 2.4GHz 802.11 b/g/n Wi-Fi on a single compact chip at a low cost, enabling direct IoT cloud communication without needing additional network shields.</p></div></div>
 
-    <!-- MEDIUM QUESTIONS -->
-    <div class="difficulty-header">Medium / Logic &amp; Calibration</div>
+    <div class="accordion"><button class="accordion-btn">3. How does the resistive water sensor measure depth?</button><div class="accordion-content"><p>The sensor features exposed parallel copper traces. As water rises across the board, the conductive liquid bridge lowers the electrical resistance between traces, allowing more current to flow and producing a higher output voltage.</p></div></div>
 
-    <div class="accordion">
-      <button class="accordion-btn">What is your threshold value, and how was it determined?</button>
-      <div class="accordion-content">
-        <p>The threshold is set to <strong>620</strong>. It was determined empirically by testing the sensor in dry conditions versus submerging it to the target water mark and reading the live ADC output on the Serial Monitor.</p>
-      </div>
-    </div>
+    <div class="accordion"><button class="accordion-btn">4. What is the operational ADC resolution of the ESP8266 analog pin?</button><div class="accordion-content"><p>The ESP8266 has a single 10-bit Analog-to-Digital Converter (ADC), yielding integer values from 0 (0V) to 1023 (maximum reference voltage).</p></div></div>
 
-    <div class="accordion">
-      <button class="accordion-btn">Why do you take an average of 10 readings in code?</button>
-      <div class="accordion-content">
-        <p>Water surface turbulence and electrical noise can cause rapid, erratic signal spikes. Averaging 10 readings over a few milliseconds smooths out transient noise and prevents false alarm triggers.</p>
-      </div>
-    </div>
+    <div class="accordion"><button class="accordion-btn">5. Why is the water sensor wired to pin A0?</button><div class="accordion-content"><p>Pin A0 is the only analog input pin on the NodeMCU board, making it the required interface for reading continuously variable voltage signals generated by the sensor.</p></div></div>
 
-    <div class="accordion">
-      <button class="accordion-btn">What prevents the Blynk app from spamming alerts every second?</button>
-      <div class="accordion-content">
-        <p>A time-gating mechanism using <code>millis()</code> ensures mobile push notifications are throttled so they are sent at most once every 30 seconds (30000ms) while the water remains high.</p>
-      </div>
-    </div>
+    <div class="accordion"><button class="accordion-btn">6. Why is the buzzer connected to pin D5?</button><div class="accordion-content"><p>Pin D5 (GPIO 14) is a standard general-purpose input/output (GPIO) pin supporting Pulse Width Modulation (PWM), suitable for driving active or passive audio transducers without interfering with boot sequences.</p></div></div>
 
-    <!-- HARD QUESTIONS -->
-    <div class="difficulty-header">Hard / Architecture &amp; Engineering</div>
+    <div class="accordion"><button class="accordion-btn">7. Why avoid using pins like S1, S2, or SK on the board?</button><div class="accordion-content"><p>Pins labeled S1, S2, SK, SC, SO, and SI connect directly to the onboard SPI flash memory holding the firmware code. Reassigning them causes immediate system crashes and Watchdog Timer resets.</p></div></div>
 
-    <div class="accordion">
-      <button class="accordion-btn">How would you prevent corrosion on the water sensor over long-term use?</button>
-      <div class="accordion-content">
-        <p>Continuous DC current causes rapid galvanic corrosion (electrolysis) on exposed metal traces. In production, power can be supplied to the sensor VCC pin via a GPIO pin—turning power ON only for a few milliseconds during a read cycle and shutting it off—or by switching to a non-contact <strong>capacitive water level sensor</strong>.</p>
-      </div>
-    </div>
+    <div class="accordion"><button class="accordion-btn">8. What is the exact triggering threshold for the alarm, and how was it configured?</button><div class="accordion-content"><p>The threshold is calibrated to 620 ADC units. This value was established through empirical testing by sampling dry ambient states versus the target water level using real-time serial telemetry.</p></div></div>
 
-    <div class="accordion">
-      <button class="accordion-btn">Why did you use pin D5 instead of pins S1, S2, or SK?</button>
-      <div class="accordion-content">
-        <p>Pin D5 (GPIO 14) is a general-purpose IO pin. Pins labeled S1, S2, SK, SC, etc., are hardwired directly to the onboard flash memory chip that stores firmware instructions; connecting external components to them corrupts instruction fetching and crashes the system.</p>
-      </div>
-    </div>
+    <div class="accordion"><button class="accordion-btn">9. How does the code handle sensor signal noise and false positives?</button><div class="accordion-content"><p>The firmware executes a 10-sample moving average filter on pin A0 before comparing the reading to the threshold, suppressing temporary liquid sloshing or electrical noise spikes.</p></div></div>
 
-    <div class="accordion">
-      <button class="accordion-btn">Why can't you connect a 230V AC water pump directly to pin D5?</button>
-      <div class="accordion-content">
-        <p>NodeMCU GPIO pins can only source up to ~12mA at 3.3V DC; high-voltage or high-current AC loads would destroy the microcontroller. To safely control a pump, you must isolate the signal using a <strong>Relay Module</strong> or an optocoupler circuit.</p>
-      </div>
-    </div>
+    <div class="accordion"><button class="accordion-btn">10. How is the passive buzzer driven in software?</button><div class="accordion-content"><p>Because a passive buzzer lacks an integrated oscillator, the microcontroller uses the <code>tone(buzzerPin, 1000)</code> function to generate a 1000Hz square wave signal, while <code>noTone(buzzerPin)</code> silences it.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">11. How does the system prevent notification spam to mobile devices?</button><div class="accordion-content"><p>A non-blocking time-gate implemented with <code>millis()</code> enforces a 30-second interval between cloud event logs, preventing network flooding during sustained high water levels.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">12. What role does the Blynk Auth Token play in this architecture?</button><div class="accordion-content"><p>The Auth Token serves as an encrypted API credential that authenticates the NodeMCU board with the designated device instance on the Blynk 2.0 Cloud platform.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">13. What happens if the local Wi-Fi connection drops during an overflow?</button><div class="accordion-content"><p>Local safeguard monitoring runs independently on the microcontroller loop. If Wi-Fi fails, cloud logging pauses, but the local buzzer still sounds immediately upon threshold breach.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">14. What is the maximum safe voltage pin A0 can take on the NodeMCU?</button><div class="accordion-content"><p>While the raw ESP8266 IC takes up to 1.0V, the NodeMCU development board contains an internal 220k/100k voltage divider on pin A0, allowing safe input up to 3.3V.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">15. Why use direct female-to-female extension cables for the buzzer?</button><div class="accordion-content"><p>Buzzer pins can fit loosely in standard breadboard spring clips. Direct jumper leads ensure vibration-proof electrical continuity during acoustic operation.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">16. Why is pin A0 kept visually isolated from high-power or PWM traces?</button><div class="accordion-content"><p>High-frequency digital signals like PWM audio output can introduce electromagnetic interference (crosstalk) into high-impedance analog lines, skewing sensor accuracy.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">17. How is code execution kept non-blocking without using delay()?</button><div class="accordion-content"><p>The firmware leverages <code>BlynkTimer</code> and system timestamps (<code>millis()</code>) to execute periodic tasks asynchronously, preserving continuous cloud connectivity and instant sensor responsiveness.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">18. What baud rate is selected for the Serial Monitor, and why must it match?</button><div class="accordion-content"><p>The system uses 115200 baud. Both hardware UART and software serial consoles must run at identical symbol rates to prevent data framing errors and unreadable output.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">19. What causes the "Missing FQBN" compiler error in Arduino IDE?</button><div class="accordion-content"><p>Fully Qualified Board Name errors occur when no target hardware platform architecture (e.g., NodeMCU 1.0 ESP-12E) has been selected in the IDE environment settings.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">20. What does the terminal message "Hard resetting via RTS pin..." signify?</button><div class="accordion-content"><p>It indicates a successful flash process. The ESP flash tool toggles the Request-To-Send pin to hardware-reset the board and execute the newly written code.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">21. How can galvanic corrosion on resistive water sensors be mitigated?</button><div class="accordion-content"><p>Continuous DC current causes track degradation over time via electrolysis. In commercial setups, sensor VCC is powered briefly from a GPIO pin only during measurement cycles, or replaced with a non-contact capacitive sensor.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">22. What is the difference between active and passive buzzers?</button><div class="accordion-content"><p>Active buzzers contain internal oscillating circuits that emit a fixed frequency on plain DC power. Passive buzzers act like small speakers requiring external alternating frequencies (PWM) to create sound.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">23. Can an AC water pump be driven directly from pin D5?</button><div class="accordion-content"><p>No. Microcontroller GPIO pins output 3.3V DC at ~12mA max. High-voltage AC equipment requires an optocoupled Relay Module or Solid State Relay (SSR) for electrical isolation and load switching.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">24. How would you alter the continuous tone into a pulsing alarm pattern?</button><div class="accordion-content"><p>By introducing a non-blocking state toggle in code that alternates between <code>tone(buzzerPin, 1000)</code> and <code>noTone(buzzerPin)</code> at defined intervals (e.g., every 250ms).</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">25. How can Wi-Fi credentials be reconfigured dynamically on new networks?</button><div class="accordion-content"><p>By integrating the <code>WiFiManager</code> library. If the board cannot connect to saved Wi-Fi, it boots as a soft Access Point with a captive web portal to enter new network details on the fly.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">26. What is the risk of hardcoding API keys in firmware?</button><div class="accordion-content"><p>Hardcoded credentials can be extracted if binary flash memory is read. Secure production systems store encrypted keys in EEPROM or LittleFS storage partitions.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">27. How could this system be modified for battery or solar operation?</button><div class="accordion-content"><p>By placing the ESP8266 into Deep Sleep mode (<code>ESP.deepSleep()</code>) between readings, waking up briefly every few minutes to sample data, dropping idle current from 70mA to ~20µA.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">28. How does the system handle rapid ambient temperature or humidity shifts?</button><div class="accordion-content"><p>Extreme humidity can create minor condensation on resistive tracks. The 10-sample moving average paired with a conservative threshold (620) prevents false trips caused by light moisture film.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">29. What security protocols safeguard data sent to Blynk cloud servers?</button><div class="accordion-content"><p>Data transfers use token-authenticated API endpoints over HTTPS/TLS sockets to prevent unauthorized parameter tampering or unauthorized data insertion.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">30. How can this deployment scale to measure multiple depth stages?</button><div class="accordion-content"><p>Multiple depth stages can be monitored by adding an analog multiplexer (e.g., CD74HC4067) to expand single pin A0 into multiple channels, or by switching to RS485/Modbus ultrasonic level transmitters.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">31. What is the power consumption profile of the NodeMCU during active Wi-Fi transmission?</button><div class="accordion-content"><p>During 2.4GHz Wi-Fi transmission spikes, current draw can reach 170mA to 240mA. Using stable power power sources avoids voltage sags that trigger microcontroller brownout resets.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">32. How does liquid salinity or mineral content affect the sensor reading?</button><div class="accordion-content"><p>Higher mineral or salt content increases liquid conductivity, resulting in higher ADC readings at lower physical immersion levels. Fresh distilled water exhibits lower conductivity and lower ADC values.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">33. What is the function of the Watchdog Timer (WDT) in the ESP8266?</button><div class="accordion-content"><p>The Watchdog Timer is a hardware safeguard that automatically restarts the ESP8266 if the main execution thread freezes or blocks for longer than 1.5 to 3.2 seconds without yielding to background Wi-Fi tasks.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">34. How does the system handle dynamic IP allocation from local routers?</button><div class="accordion-content"><p>The ESP8266 network stack uses DHCP by default to request an IP address automatically upon boot, ensuring seamless connection across different network routers without manual IP configuration.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">35. Why is a pull-down resistor sometimes used on analog sensor lines?</button><div class="accordion-content"><p>A pull-down resistor grounds floating signal lines when the sensor is disconnected or dry, preventing random atmospheric static electricity from registering as valid water readings.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">36. What is the advantage of contactless ultrasonic sensors over resistive sensors?</button><div class="accordion-content"><p>Ultrasonic sensors (like HC-SR04) send sound waves from above the liquid surface, eliminating physical fluid contact and avoiding sensor corrosion, scaling, or chemical degradation over time.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">37. How can hysteresis be implemented in code to prevent rapid alarm toggling?</button><div class="accordion-content"><p>Hysteresis uses separate turn-on and turn-off thresholds (e.g., turn ON at 620 ADC, turn OFF at 580 ADC) so slight water surface ripples do not rapidly flip the buzzer on and off.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">38. How does the NodeMCU handle OTA (Over-The-Air) firmware updates?</button><div class="accordion-content"><p>By including the <code>ArduinoOTA</code> library, the ESP8266 can flash updated firmware over the local Wi-Fi network without requiring a physical USB connection to a computer.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">39. What type of physical enclosure is recommended for outdoor installation?</button><div class="accordion-content"><p>An IP65 or IP67 weather-proof NEMA polycarbonate enclosure with rubber cable glands protects the electronics from rain, ambient moisture, dust, and direct UV radiation.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">40. Why should sensor ground and board ground share a common reference plane?</button><div class="accordion-content"><p>A common ground reference ensures all voltage measurements on pin A0 are relative to 0V. Disconnected ground references cause floating, unpredictable ADC readings.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">41. How does the system respond if the cloud platform undergoes server maintenance?</button><div class="accordion-content"><p>The local audio alarm and microcontroller logic continue operating normally. Cloud synchronization automatically resumes once connection to Blynk servers is restored.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">42. Can this setup be adapted to detect non-conductive liquids like pure oil or fuel?</button><div class="accordion-content"><p>No, resistive sensors require conductive liquids. Non-conductive fluids like oil require capacitive, optical, or float-based mechanical switches.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">43. What role does the onboard CP2102 or CH340 chip play on the NodeMCU?</button><div class="accordion-content"><p>It converts USB communications from a host computer into TTL serial (UART) protocol understood by the ESP8266 microcontroller for code uploading and debugging.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">44. How can MQTT protocol replace Blynk for local home automation integration?</button><div class="accordion-content"><p>By integrating the <code>PubSubClient</code> library, the system can publish telemetry directly to a local MQTT broker (like Home Assistant or Mosquitto) without external internet dependency.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">45. What is the impact of long wire runs between the sensor and pin A0?</button><div class="accordion-content"><p>Long wire cables add electrical resistance and act as antennas for electromagnetic noise. Shielded twisted-pair wiring or signal amplification helps maintain signal accuracy over distance.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">46. How does the code calculate the moving average filter?</button><div class="accordion-content"><p>The code takes 10 sequential analog readings on pin A0 with short delays (e.g., 10ms), sums the values, and divides by 10 to produce a smooth, stable average reading.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">47. Why are electrolytic capacitors sometimes added across the 3.3V power rails?</button><div class="accordion-content"><p>A decoupling capacitor (e.g., 100µF) acts as a local power reservoir, smoothing out rapid voltage drops during Wi-Fi transmission bursts and keeping the MCU stable.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">48. What is the difference between digital thresholding and analog depth mapping?</button><div class="accordion-content"><p>Digital thresholding triggers a binary status (SAFE/ALERT) at a specific limit, whereas analog depth mapping correlates raw ADC values (0–1023) directly to precise centimeters of fluid height.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">49. How does the system handle sensor disconnection or wire breakage?</button><div class="accordion-content"><p>When the signal wire is disconnected, the high-impedance A0 pin drops to near-zero ADC values, preventing false overflow alarms and flagging potential hardware maintenance needs.</p></div></div>
+
+    <div class="accordion"><button class="accordion-btn">50. How can this single-node setup be expanded into a multi-node mesh network?</button><div class="accordion-content"><p>Using libraries like <code>painlessMesh</code>, multiple NodeMCU devices can form a self-healing mesh network, forwarding telemetry across nodes to a central internet gateway without individual Wi-Fi router range constraints.</p></div></div>
 
   </div>
 </div>
 
 <script>
-  // Accordion Logic
   const accordions = document.querySelectorAll('.accordion-btn');
 
   accordions.forEach(acc => {
@@ -412,7 +483,6 @@
     });
   });
 
-  // Interactive Demo Simulator Logic
   function updateDemoGauge(val) {
     const adcElem = document.getElementById('adcValue');
     const badge = document.getElementById('statusBadge');
