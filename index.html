@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IoT Water Level Detection System - NodeMCU ESP8266</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-blue: #38bdf8;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Dashboard Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      color: var(--accent-blue);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    /* Status Indicator Gauge */
+    .gauge-container {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .water-value {
+      font-size: 3.5rem;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+
+    .unit {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-top: 15px;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .status-badge.normal {
+      background-color: rgba(34, 197, 94, 0.2);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+    }
+
+    .status-badge.alert {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+      border: 1px solid var(--accent-red);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    /* Wiring Table */
+    .wiring-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .wiring-table th, .wiring-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    .wiring-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Q&A Accordion Styling */
+    .qa-section {
+      margin-top: 40px;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: var(--accent-blue);
+      margin-bottom: 20px;
+    }
+
+    .difficulty-header {
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.9rem;
+      margin: 25px 0 10px 0;
+      font-weight: bold;
+    }
+
+    .accordion {
+      margin-bottom: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: var(--card-bg);
+    }
+
+    .accordion-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .accordion-btn:hover {
+      background-color: rgba(56, 189, 248, 0.08);
+    }
+
+    .accordion-btn::after {
+      content: '+';
+      font-size: 1.4rem;
+      color: var(--accent-blue);
+    }
+
+    .accordion-btn.active::after {
+      content: '−';
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      background-color: rgba(15, 23, 42, 0.5);
+      border-top: 1px solid transparent;
+    }
+
+    .accordion-content p {
+      padding: 16px 20px;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.7;
+    }
+
+    /* Controls / Testing UI */
+    .slider-control {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .slider-control input {
+      width: 80%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>IoT Water Level Detector System</h1>
+    <p>NodeMCU ESP8266 • Blynk IoT Cloud Integration • Audio Alert Subsystem</p>
+  </header>
+
+  <!-- Live System Dashboard -->
+  <div class="dashboard-grid">
+    <!-- Live Sensor Gauge -->
+    <div class="card">
+      <h2>Live Water Level Reading</h2>
+      <div class="gauge-container">
+        <span class="water-value" id="adcValue">240</span> <span class="unit">/ 1023 ADC</span>
+        <br>
+        <div class="status-badge normal" id="statusBadge">Status: Normal (Safe)</div>
+      </div>
+      
+      <!-- Interactive Demo Slider for Exhibition Testing -->
+      <div class="slider-control">
+        <label for="sensorSim" style="color: var(--text-muted); font-size: 0.85rem;">Exhibition Demo Simulator:</label><br>
+        <input type="range" id="sensorSim" min="0" max="1023" value="240" oninput="updateDemoGauge(this.value)">
+      </div>
+    </div>
+
+    <!-- Hardware Configuration -->
+    <div class="card">
+      <h2>Pin Mapping & Connections</h2>
+      <table class="wiring-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Pin / Signal</th>
+            <th>NodeMCU Pin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Water Level Sensor</td>
+            <td>Signal (Out)</td>
+            <td><strong>A0</strong> (Analog)</td>
+          </tr>
+          <tr>
+            <td>Water Level Sensor</td>
+            <td>VCC / GND</td>
+            <td><strong>3U (3.3V) / G</strong></td>
+          </tr>
+          <tr>
+            <td>Passive Buzzer</td>
+            <td>Positive (+)</td>
+            <td><strong>D5</strong> (GPIO 14)</td>
+          </tr>
+          <tr>
+            <td>Passive Buzzer</td>
+            <td>Ground (-)</td>
+            <td><strong>G</strong> (Ground)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Software Specifications -->
+    <div class="card">
+      <h2>System Thresholds & Timing</h2>
+      <table class="wiring-table">
+        <tbody>
+          <tr>
+            <td>Alarm Threshold</td>
+            <td><strong>&ge; 620 ADC</strong></td>
+          </tr>
+          <tr>
+            <td>Buzzer Frequency</td>
+            <td><strong>1000 Hz Continuous</strong></td>
+          </tr>
+          <tr>
+            <td>Noise Reduction Filter</td>
+            <td><strong>10-Reading Moving Average</strong></td>
+          </tr>
+          <tr>
+            <td>Blynk Alert Throttle</td>
+            <td><strong>30 Seconds Interval</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Interactive Exhibition Q&A Accordion -->
+  <div class="qa-section">
+    <h2 class="section-title">Exhibition Technical Defense Q&amp;A</h2>
+
+    <!-- EASY QUESTIONS -->
+    <div class="difficulty-header">Easy / General Overview</div>
+
+    <div class="accordion">
+      <button class="accordion-btn">What does your project do, and what problem does it solve?</button>
+      <div class="accordion-content">
+        <p>It monitors water levels in real time using an analog sensor connected to a NodeMCU ESP8266. When water reaches a pre-set hazardous threshold, it triggers an immediate local audio alert (buzzer) and sends a remote notification to a smartphone via the Blynk IoT cloud to prevent overflow or water damage.</p>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-btn">Why did you choose a NodeMCU (ESP8266) instead of an Arduino Uno?</button>
+      <div class="accordion-content">
+        <p>The NodeMCU features a built-in 2.4GHz Wi-Fi chip (ESP8266) at a very low cost, making it ideal for IoT cloud connectivity without requiring expensive external Wi-Fi shields like an Arduino Uno would.</p>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-btn">How does the water sensor detect water?</button>
+      <div class="accordion-content">
+        <p>It uses parallel printed copper traces on a PCB. When water touches the traces, it completes an electrical path between power and ground through the water's natural conductivity, changing the resistance and altering the voltage fed into the analog pin.</p>
+      </div>
+    </div>
+
+    <!-- MEDIUM QUESTIONS -->
+    <div class="difficulty-header">Medium / Logic &amp; Calibration</div>
+
+    <div class="accordion">
+      <button class="accordion-btn">What is your threshold value, and how was it determined?</button>
+      <div class="accordion-content">
+        <p>The threshold is set to <strong>620</strong>. It was determined empirically by testing the sensor in dry conditions versus submerging it to the target water mark and reading the live ADC output on the Serial Monitor.</p>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-btn">Why do you take an average of 10 readings in code?</button>
+      <div class="accordion-content">
+        <p>Water surface turbulence and electrical noise can cause rapid, erratic signal spikes. Averaging 10 readings over a few milliseconds smooths out transient noise and prevents false alarm triggers.</p>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-btn">What prevents the Blynk app from spamming alerts every second?</button>
+      <div class="accordion-content">
+        <p>A time-gating mechanism using <code>millis()</code> ensures mobile push notifications are throttled so they are sent at most once every 30 seconds (30000ms) while the water remains high.</p>
+      </div>
+    </div>
+
+    <!-- HARD QUESTIONS -->
+    <div class="difficulty-header">Hard / Architecture &amp; Engineering</div>
+
+    <div class="accordion">
+      <button class="accordion-btn">How would you prevent corrosion on the water sensor over long-term use?</button>
+      <div class="accordion-content">
+        <p>Continuous DC current causes rapid galvanic corrosion (electrolysis) on exposed metal traces. In production, power can be supplied to the sensor VCC pin via a GPIO pin—turning power ON only for a few milliseconds during a read cycle and shutting it off—or by switching to a non-contact <strong>capacitive water level sensor</strong>.</p>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-btn">Why did you use pin D5 instead of pins S1, S2, or SK?</button>
+      <div class="accordion-content">
+        <p>Pin D5 (GPIO 14) is a general-purpose IO pin. Pins labeled S1, S2, SK, SC, etc., are hardwired directly to the onboard flash memory chip that stores firmware instructions; connecting external components to them corrupts instruction fetching and crashes the system.</p>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <button class="accordion-btn">Why can't you connect a 230V AC water pump directly to pin D5?</button>
+      <div class="accordion-content">
+        <p>NodeMCU GPIO pins can only source up to ~12mA at 3.3V DC; high-voltage or high-current AC loads would destroy the microcontroller. To safely control a pump, you must isolate the signal using a <strong>Relay Module</strong> or an optocoupler circuit.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Accordion Logic
+  const accordions = document.querySelectorAll('.accordion-btn');
+
+  accordions.forEach(acc => {
+    acc.addEventListener('click', function() {
+      this.classList.toggle('active');
+      const content = this.nextElementSibling;
+      if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        content.style.borderTopColor = 'transparent';
+      } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.style.borderTopColor = 'var(--border-color)';
+      }
+    });
+  });
+
+  // Interactive Demo Simulator Logic
+  function updateDemoGauge(val) {
+    const adcElem = document.getElementById('adcValue');
+    const badge = document.getElementById('statusBadge');
+    
+    adcElem.textContent = val;
+
+    if (parseInt(val) >= 620) {
+      badge.textContent = "Status: WATER ALERT TRIGGERED!";
+      badge.className = "status-badge alert";
+    } else {
+      badge.textContent = "Status: Normal (Safe)";
+      badge.className = "status-badge normal";
+    }
+  }
+</script>
+
+</body>
+</html>
